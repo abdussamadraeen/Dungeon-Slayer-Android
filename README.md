@@ -45,9 +45,10 @@ Dungeon Slayer features **Universal Cross-Platform Input**. This means Desktop K
 If you wish to download the source code, view the C# architecture, or modify the game yourself, follow these steps:
 
 ### 1. Required Software
-Because this game utilizes specific physics integrations, you must download the correct tools from the archives.
-- **Unity Editor**: Download the **Unity Hub**, then navigate to the [Unity Download Archive](https://unity.com/releases/editor/archive). Download and install **Unity 2020.1.x** (or the closely matching 2019 Long-Term Support edition). 
-- **Code Editor**: Install **Visual Studio Code** (VS Code). Make sure to install the standard C# extensions for syntax highlighting.
+
+- **Unity Editor**: This game relies on specific 2D physics packages, so you must use exactly **Unity 2020.1.1f1**.
+  - To install it automatically in one click, just copy and paste this direct link into your internet browser: `unityhub://2020.1.1f1/2285c3239188`
+- **Code Editor**: Install **Visual Studio Code** (VS Code) with the standard C# extensions for syntax highlighting.
 
 ### 2. Installation Steps
 1. Clone this repository to your local machine using Git Desktop or terminal.
@@ -60,7 +61,6 @@ Because this game utilizes specific physics integrations, you must download the 
 
 ## Authorship & Credits
 **Authored by: Abdus Samad Raeen**  
-*Lead Developer & Architect. Responsible for the full core gameplay overhaul, optimized systems, and implementation of all dynamic action abilities.*
 
 **Special Credits & Original Implementation:**  
 Some foundational assets & architecture were originally developed by [Kailius](https://github.com/Walkator/Kailius). Huge thanks for providing the base template for this project to expand upon.
