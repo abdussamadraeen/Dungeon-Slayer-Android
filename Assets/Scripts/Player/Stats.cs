@@ -1,92 +1,135 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
 public class Stats : MonoBehaviour {
     
+    [Header("Core Stats")]
     public int health = 200;
     public int power = 0;
     public int attackDamage = 100;
     public int defense = 0;
 
+    [Header("References")]
     public GameObject camera;
     public GameObject stats;
 
-
+    [Header("Hearts (Do Not Rename)")]
     public Image hearts;
     public Sprite fullHeart;
-    public Sprite heart190;
-    public Sprite heart180;
-    public Sprite heart170;
-    public Sprite heart160;
-    public Sprite heart150;
-    public Sprite heart140;
-    public Sprite heart130;
-    public Sprite heart120;
-    public Sprite heart110;
-    public Sprite heart100;
-    public Sprite heart90;
-    public Sprite heart80;
-    public Sprite heart70;
-    public Sprite heart60;
-    public Sprite heart50;
-    public Sprite heart40;
-    public Sprite heart30;
-    public Sprite heart20;
-    public Sprite heart10;
+    public Sprite heart190, heart180, heart170, heart160, heart150, heart140, heart130, heart120, heart110;
+    public Sprite heart100, heart90, heart80, heart70, heart60, heart50, heart40, heart30, heart20, heart10;
     public Sprite emptyHeart;
 
+    [Header("Powers (Do Not Rename)")]
     public Image powers;
     public Sprite fullPower;
-    public Sprite power75;
-    public Sprite power50;
-    public Sprite power25;
+    public Sprite power75, power50, power25;
     public Sprite emptyPower;
 
-    public static Stats instance;
+    [Header("UI Text & Audio")]
     public TextMeshProUGUI textDamage;
     public TextMeshProUGUI textDefense;
     public GameObject deathSound;
     public GameObject damageSound;
 
-    private bool once = false;
+    public static Stats instance;
+    private bool isDeadFlag = false;
 
-    // Start is called before the first frame update
-    void Start() {
-        if(instance == null) {
+    private Animator anim;
+    private PlayerController playerController;
+
+    private void Awake() {
+        if (instance == null) {
             instance = this;
         }
 
-        // We take the saved data from the other scenes
-        if ((int)PlayerPrefs.GetInt("AttackDamage", 0) >= 100) {
-            this.attackDamage = (int)PlayerPrefs.GetInt("AttackDamage", 0);
-        }
-        this.defense = (int)PlayerPrefs.GetInt("Defense", 0);
-        // Update the counters
-        this.textDamage.text = "+" + attackDamage.ToString();
-        this.textDefense.text = "+" + defense.ToString();
+        anim = GetComponent<Animator>();
+        playerController = GetComponentInParent<PlayerController>();
     }
 
-    // Update is called once per frame
-    void Update() {
-        // Update the counters 
-        this.textDamage.text = "+" + attackDamage.ToString();
-        this.textDefense.text = "+" + defense.ToString();
+    private void Start() {
+        // Load saved data
+        int savedAttack = PlayerPrefs.GetInt("AttackDamage", 0);
+        if (savedAttack >= 100) {
+            attackDamage = savedAttack;
+        }
+        defense = PlayerPrefs.GetInt("Defense", 0);
 
-        if (health <= 0) {
-            gameObject.GetComponent<Animator>().SetBool("die", true);
-            //gameObject.GetComponentInParent<PlayerController>().destroy();
-            gameObject.GetComponentInParent<PlayerController>().isDead();
-            camera.SetActive(true);
-            stats.SetActive(false);
-            if (!once) {
-                Instantiate(deathSound);
-                once = true;
+        UpdateStatTextUI();
+        UpdateHealthUI();
+        UpdatePowerUI();
+    }
+
+    [Header("Awakening (Limit Break)")]
+    public float awakeningDuration = 10f;
+    private bool isAwakened = false;
+
+    private void Update() {
+        if (!isAwakened && power >= 4) {
+            if (Input.GetKeyDown(KeyCode.R)) {
+                ActivateAwakening();
             }
         }
+    }
 
+    public void ActivateAwakeningButton() {
+        if (!isAwakened && power >= 4) {
+            ActivateAwakening();
+        }
+    }
+
+    private void ActivateAwakening() {
+        isAwakened = true;
+        power = 0;
+        UpdatePowerUI();
+
+        StartCoroutine(AwakeningRoutine());
+    }
+
+    private System.Collections.IEnumerator AwakeningRoutine() {
+        // Boost stats 
+        int damageBuff = attackDamage;
+        attackDamage += damageBuff; // double damage
+        defense += 50; // extra defense
+        
+        // Aura glow
+        SpriteRenderer sr = playerController != null ? playerController.GetComponent<SpriteRenderer>() : null;
+        Color originalColor = Color.white;
+        if (sr != null) {
+            originalColor = sr.color;
+            sr.color = new Color(1f, 0.4f, 0.4f); // Red aura
+        }
+
+        yield return new WaitForSeconds(awakeningDuration);
+
+        // Turn off
+        attackDamage -= damageBuff; // Revert strictly the buffed amount
+        defense -= 50;
+        if (sr != null) {
+            sr.color = originalColor;
+        }
+
+        isAwakened = false;
+    }
+
+    private void HandleDeath() {
+        if (isDeadFlag) return;
+        isDeadFlag = true;
+
+        if (anim != null) anim.SetBool("die", true);
+        if (playerController != null) playerController.isDeadStatus();
+
+        if (camera != null) camera.SetActive(true);
+        if (stats != null) stats.SetActive(false);
+
+        if (deathSound != null) {
+            Instantiate(deathSound);
+        }
+    }
+
+    private void UpdateHealthUI() {
+        if (hearts == null) return;
 
         switch (health) {
             case int n when (n >= 200):            hearts.sprite = fullHeart; break;
@@ -102,7 +145,7 @@ public class Stats : MonoBehaviour {
             case int n when (n >= 100 && n < 110): hearts.sprite = heart100; break;
             case int n when (n >= 90 && n < 100):  hearts.sprite = heart90; break;
             case int n when (n >= 80 && n < 90):   hearts.sprite = heart80; break;
-            case int n when (n >= 70 && n <= 80):  hearts.sprite = heart70; break;
+            case int n when (n >= 70 && n < 80):   hearts.sprite = heart70; break;
             case int n when (n >= 60 && n < 70):   hearts.sprite = heart60; break;
             case int n when (n >= 50 && n < 60):   hearts.sprite = heart50; break;
             case int n when (n >= 40 && n < 50):   hearts.sprite = heart40; break;
@@ -111,7 +154,11 @@ public class Stats : MonoBehaviour {
             case int n when (n >= 10 && n < 20):   hearts.sprite = heart10; break;
             case int n when (n < 10):              hearts.sprite = emptyHeart; break;
         }
+    }
 
+    private void UpdatePowerUI() {
+        if (powers == null) return;
+        
         switch (power) {
             case 4: powers.sprite = fullPower; break;
             case 3: powers.sprite = power75; break;
@@ -119,50 +166,74 @@ public class Stats : MonoBehaviour {
             case 1: powers.sprite = power25; break;
             case 0: powers.sprite = emptyPower; break;
         }
+    }
 
+    private void UpdateStatTextUI() {
+        if (textDamage != null) textDamage.text = "+" + attackDamage.ToString();
+        if (textDefense != null) textDefense.text = "+" + defense.ToString();
     }
 
     public void takeDamage(int value) {
-        if((value-defense) > 0) { 
-            this.health -= (value-defense);
+        int actualDamage = value - defense;
+        if (actualDamage > 0) { 
+            health -= actualDamage;
         }
-        Instantiate(damageSound);
+        
+        if (damageSound != null) {
+            Instantiate(damageSound);
+        }
+
+        if (health <= 0) {
+            HandleDeath();
+        } else {
+            UpdateHealthUI();
+        }
     }
 
     public void takeTrueDamage(int value) {
-        this.health -= value;
-    }
-
-    public void takePower(int value) {
-        this.power += value;
-    }
-
-    public int getHealth() {
-        return this.health;
-    }
-
-    public int getPower() {
-        return this.power;
-    }
-
-    public void setHealth(int value) {
-        this.health += value;
-        if(this.health >= 200) {
-            this.health = 200;
+        health -= value;
+        if (health <= 0) {
+            HandleDeath();
+        } else {
+            UpdateHealthUI();
         }
     }
 
+    public void takePower(int value) {
+        power += value;
+        if (power > 4) power = 4;
+        UpdatePowerUI();
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public int getPower() {
+        return power;
+    }
+
+    public void setHealth(int value) {
+        health += value;
+        if (health >= 200) {
+            health = 200;
+        }
+        UpdateHealthUI();
+    }
+
     public void addAttackDamage(int value) {
-        this.attackDamage += value;
+        attackDamage += value;
         PlayerPrefs.SetInt("AttackDamage", attackDamage);
+        UpdateStatTextUI();
     }
 
     public int getAttackDamage() {
-        return this.attackDamage;
+        return attackDamage;
     }
 
     public void addDefense(int value) {
-        this.defense += value;
+        defense += value;
         PlayerPrefs.SetInt("Defense", defense);
+        UpdateStatTextUI();
     }
 }

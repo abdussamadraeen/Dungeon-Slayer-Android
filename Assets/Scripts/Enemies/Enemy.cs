@@ -1,14 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Collider2D))]
 public class Enemy : MonoBehaviour {
 
+    [Header("Stats")]
     public int health = 500;
     public float timeDestroy = 1.5f;
     public Animator animator;
     public GameObject deathSound;
 
+    [Header("Loot Drops")]
     public GameObject coins;
     public GameObject hearts;
     public GameObject sword;
@@ -19,60 +21,79 @@ public class Enemy : MonoBehaviour {
     public int maxSwords = 2;
     public int maxShields = 2;
 
+    private Rigidbody2D rb;
+    private Collider2D col;
+    private bool isDead = false;
+
+    private void Awake() {
+        if (animator == null) animator = GetComponent<Animator>();
+        rb = GetComponent<Rigidbody2D>();
+        col = GetComponent<Collider2D>();
+    }
+
     public void TakeDamage(int damage) {
-        this.health -= damage;
+        if (isDead) return;
 
-        // Play wound animation
-        animator.SetTrigger("hurt");
+        health -= damage;
 
-        if(health <= 0) {
+        if (ImpactFX.instance != null) {
+            ImpactFX.instance.SpawnDamagePopup(transform.position, damage);
+        }
+
+        if (animator != null) {
+            animator.SetTrigger("hurt");
+        }
+
+        if (health <= 0) {
             Die();
         }
     }
 
-    void Die() {
-        gameObject.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePositionY;
+    private void Die() {
+        if (isDead) return;
+        isDead = true;
 
-        // Drop items
-        dropItems();
+        if (rb != null) {
+            rb.constraints = RigidbodyConstraints2D.FreezePositionY;
+        }
 
-        // Play animation of the deceased
-        animator.SetBool("isDead", true);
+        DropLoot();
 
-        // Add punctuation
-        ScoreManager.instance.ChangeScore(100);
+        if (animator != null) {
+            animator.SetBool("isDead", true);
+        }
 
-        // Destroy the enemy
-        GetComponent<Collider2D>().enabled = false;
+        if (ScoreManager.instance != null) {
+            ScoreManager.instance.ChangeScore(100);
+        }
+
+        if (col != null) col.enabled = false;
         this.enabled = false;
 
-        // Sound
-        Instantiate(deathSound);
-        Object.Destroy(gameObject, timeDestroy);
+        if (deathSound != null) {
+            Instantiate(deathSound, transform.position, Quaternion.identity);
+        }
+
+        Destroy(gameObject, timeDestroy);
     }
 
-    void dropItems() {
-        int numCoins = Random.Range(1, maxCoins);
-        int numHearts = Random.Range(0, maxHearts);
-        int numSwords = Random.Range(0, maxSwords);
-        int numShields = Random.Range(0, maxShields);
-
-        for (int i = 0; i < numCoins; i++) {
-            Instantiate(coins, new Vector3(gameObject.transform.position.x - 1.0f, gameObject.transform.position.y + 2.0f, gameObject.transform.position.z), Quaternion.identity);
-        }
-
-        for (int i = 0; i < numHearts; i++) {
-            Instantiate(hearts, new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 2.0f, gameObject.transform.position.z), Quaternion.identity);
-        }
-
-        for (int i = 0; i < numSwords; i++) {
-            Instantiate(sword, new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 2.0f, gameObject.transform.position.z), Quaternion.identity);
-        }
-
-        for (int i = 0; i < numShields; i++) {
-            Instantiate(shield, new Vector3(gameObject.transform.position.x, gameObject.transform.position.y + 2.0f, gameObject.transform.position.z), Quaternion.identity);
-        }
+    private void DropLoot() {
+        SpawnItem(coins, Random.Range(1, maxCoins));
+        SpawnItem(hearts, Random.Range(0, maxHearts));
+        SpawnItem(sword,  Random.Range(0, maxSwords));
+        SpawnItem(shield, Random.Range(0, maxShields));
     }
 
+    private void SpawnItem(GameObject itemPrefab, int amount) {
+        if (itemPrefab == null || amount <= 0) return;
 
+        for (int i = 0; i < amount; i++) {
+            // Adds a small random spread so loot doesn't stack perfectly on top of each other
+            float randomXOffset = Random.Range(-1.5f, 1.5f);
+            float randomYOffset = Random.Range(1.0f, 2.5f);
+            
+            Vector3 spawnPosition = transform.position + new Vector3(randomXOffset, randomYOffset, 0);
+            Instantiate(itemPrefab, spawnPosition, Quaternion.identity);
+        }
+    }
 }

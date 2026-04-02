@@ -1,31 +1,35 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class Arrow : MonoBehaviour {
 
     public float speed = 20f;
     public int damage = 200;
-    public float time = 0.5f;
-    public Rigidbody2D rb;
+    public float timeToLive = 3.0f;
+    
+    private Rigidbody2D rb;
 
-    // Start is called before the first frame update
-    void Start() {
-        rb.velocity = transform.right * speed;
+    private void Awake() {
+        rb = GetComponent<Rigidbody2D>();
     }
 
-    void Update() {
-        // Delete the object after a certain amount of time has passed
-        //Object.Destroy(gameObject, 1.0f);
+    private void Start() {
+        if (rb != null) {
+            rb.velocity = transform.right * speed;
+        }
+        
+        // Destroy the arrow after a few seconds so it doesn't cause a memory leak
+        Destroy(gameObject, timeToLive);
     }
 
-    void OnTriggerEnter2D(Collider2D collision) {
-
+    private void OnTriggerEnter2D(Collider2D collision) {
         if (collision.gameObject.CompareTag("Enemies") || collision.gameObject.CompareTag("Boss")) {
             Enemy enemy = collision.GetComponent<Enemy>();
-            if(enemy != null) {
-                damage = Mathf.FloorToInt(Stats.instance.getAttackDamage() + (0.4f * Stats.instance.getAttackDamage()));
-                Debug.Log(damage);
+            if (enemy != null) {
+                // Calculate critical damage scaling
+                int attackDamage = Stats.instance != null ? Stats.instance.getAttackDamage() : 100;
+                damage = Mathf.FloorToInt(attackDamage + (0.4f * attackDamage));
+                
                 enemy.TakeDamage(damage);
             }
             Destroy(gameObject);

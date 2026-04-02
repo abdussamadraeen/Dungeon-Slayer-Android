@@ -44,7 +44,7 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void Update() {
-        if (isDead || (controllerMobile != null && controllerMobile.activeSelf)) 
+        if (isDead) 
             return;
 
         HandleMenuInput();
