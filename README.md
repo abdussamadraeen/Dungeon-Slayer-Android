@@ -13,7 +13,7 @@ A powerful, highly-optimized 2D Action RPG / Dungeon Crawler featuring smooth co
 
 ## 🎮 How to Play
 
-Dungeon Slayer supports both Desktop and Mobile control schemes dynamically!
+Dungeon Slayer features **Universal Cross-Platform Input**. This means Desktop Keyboards, Xbox/PS Gamepads, and Android Touch Screens can all be plugged in and played simultaneously without changing any settings!
 
 ### Desktop (Keyboard) Controls
 - **WASD / Arrow Keys**: Move left, right, and jump.
@@ -22,6 +22,15 @@ Dungeon Slayer supports both Desktop and Mobile control schemes dynamically!
 - **C**: Fire Bow (Requires exactly 4 Power Stars).
 - **Left Shift**: Shadow Dash (Leaves behind afterimages).
 - **R**: Activate Awakening/Limit Break (Requires maximum Power Stars. Doubles damage output for 10 seconds).
+
+### Console (Gamepad) Controls
+- **Left Analog Stick / D-Pad**: Move left and right.
+- **[A] Button / [Cross]**: Jump.
+- **[X] Button / [Square]**: Melee Sword Attack (Triggers Hit-Stop).
+- **[Y] Button / [Triangle]**: Fire Bow (Requires exactly 4 Power Stars).
+- **[RB] Right Bumper**: Shadow Dash (Leaves behind afterimages).
+- **[B] Button / [Circle]**: Activate Awakening/Limit Break.
+- **[Start] Button**: Pause / Open Menu.
 
 ### Mobile (Touch) Controls
 - Use the **On-Screen Joystick** on the left side to move.

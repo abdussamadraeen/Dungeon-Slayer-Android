@@ -26,7 +26,7 @@ public class DashSkill : MonoBehaviour {
     private void Update() {
         if (isDashing || Time.time < lastDashTime + dashCooldown) return;
 
-        if (Input.GetKeyDown(KeyCode.LeftShift)) {
+        if (Input.GetKeyDown(KeyCode.LeftShift) || Input.GetKeyDown(KeyCode.JoystickButton5)) {
             StartCoroutine(PerformDash());
         }
     }

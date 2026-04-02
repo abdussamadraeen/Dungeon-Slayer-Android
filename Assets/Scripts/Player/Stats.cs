@@ -67,7 +67,7 @@ public class Stats : MonoBehaviour {
 
     private void Update() {
         if (!isAwakened && power >= 4) {
-            if (Input.GetKeyDown(KeyCode.R)) {
+            if (Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.JoystickButton1)) {
                 ActivateAwakening();
             }
         }

@@ -18,7 +18,7 @@ public class Bow : MonoBehaviour {
     private void Update() {
         if (playerStats == null) return;
 
-        if (Input.GetKeyDown(KeyCode.C) && playerStats.getPower() >= 4) {
+        if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.JoystickButton3)) && playerStats.getPower() >= 4) {
             FireBow();
         }
     }

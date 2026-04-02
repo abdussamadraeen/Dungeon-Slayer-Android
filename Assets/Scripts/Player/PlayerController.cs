@@ -53,7 +53,7 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void HandleMenuInput() {
-        if (Input.GetKeyDown(KeyCode.Escape)) {
+        if (Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.JoystickButton7)) {
             if (menu != null && stats != null) {
                 bool isMenuActive = menu.activeSelf;
                 menu.SetActive(!isMenuActive);
@@ -69,7 +69,8 @@ public class PlayerController : MonoBehaviour {
             canDoubleJump = playerControllerUp.getDoubleJump();
         }
 
-        if (Input.GetKeyDown(KeyCode.Space)) {
+        // KeyCode.Space for Windows/Mac, JoystickButton0 for Xbox 'A' / PS 'Cross'
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.JoystickButton0)) {
             if (canJump) {
                 PerformJump();
                 if (playerControllerUp != null) playerControllerUp.setJump(false);
@@ -87,25 +88,22 @@ public class PlayerController : MonoBehaviour {
     }
 
     private void HandleMovementInput() {
-        float moveDirection = 0f;
+        // Native Unity axis seamlessly handles Keyboard (WASD/Arrows) and Gamepad Analog Stick 
+        float moveDirection = Input.GetAxisRaw("Horizontal");
 
-        if (Input.GetKey(KeyCode.A)) {
-            moveDirection = -1f;
-        } else if (Input.GetKey(KeyCode.D)) {
-            moveDirection = 1f;
-        }
-
-        if (moveDirection != 0f) {
+        // We only enforce velocity if keyboard/gamepad is being touched. 
+        // This prevents overriding the Android On-Screen Joystick's velocity instructions.
+        if (Mathf.Abs(moveDirection) > 0.1f) {
             CreateDust();
             rb.velocity = new Vector2(moveDirection * moveSpeed, rb.velocity.y);
-            anim.SetBool("moving", true);
             
             bool isMovingLeft = moveDirection < 0;
             spriteRenderer.flipX = isMovingLeft;
             HandleFacingDirection(isMovingLeft);
-        } else {
-            anim.SetBool("moving", false);
         }
+
+        // Animate based on raw velocity to guarantee perfect UI sync across Android/Console/Windows
+        anim.SetBool("moving", Mathf.Abs(rb.velocity.x) > 0.1f);
     }
 
     private void HandleFacingDirection(bool isMovingLeft) {

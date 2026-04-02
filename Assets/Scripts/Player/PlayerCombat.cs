@@ -22,7 +22,7 @@ public class PlayerCombat : MonoBehaviour {
 
     private void Update() {
         if (Time.time >= nextAttackTime) {
-            if (Input.GetKeyDown(KeyCode.F)) {
+            if (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.JoystickButton2)) {
                 PerformAttack();
             }
         }
