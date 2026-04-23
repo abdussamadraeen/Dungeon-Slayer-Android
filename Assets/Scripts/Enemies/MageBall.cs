@@ -22,7 +22,7 @@ public class MageBall : MonoBehaviour {
 
         // Throw the ball
         Debug.Log("Ball thrown");
-        rb.velocity = direction * speed;
+        rb.linearVelocity = direction * speed;
     }
 
     void Update() {

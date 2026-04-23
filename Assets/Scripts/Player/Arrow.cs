@@ -15,7 +15,7 @@ public class Arrow : MonoBehaviour {
 
     private void Start() {
         if (rb != null) {
-            rb.velocity = transform.right * speed;
+            rb.linearVelocity = transform.right * speed;
         }
         
         // Destroy the arrow after a few seconds so it doesn't cause a memory leak

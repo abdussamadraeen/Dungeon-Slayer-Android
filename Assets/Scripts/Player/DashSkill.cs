@@ -46,11 +46,11 @@ public class DashSkill : MonoBehaviour {
 
         float dashDirection = (spriteRenderer != null && spriteRenderer.flipX) ? -1f : 1f;
         
-        if (Mathf.Abs(rb.velocity.x) > 0.1f) {
-            dashDirection = Mathf.Sign(rb.velocity.x);
+        if (Mathf.Abs(rb.linearVelocity.x) > 0.1f) {
+            dashDirection = Mathf.Sign(rb.linearVelocity.x);
         }
 
-        rb.velocity = new Vector2(dashDirection * dashForce, 0f);
+        rb.linearVelocity = new Vector2(dashDirection * dashForce, 0f);
 
         float elapsed = 0f;
         float nextImageTime = 0f;
@@ -67,7 +67,7 @@ public class DashSkill : MonoBehaviour {
         }
 
         rb.gravityScale = originalGravity;
-        rb.velocity = new Vector2(0f, rb.velocity.y);
+        rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
         isDashing = false;
     }
 

@@ -84,7 +84,7 @@ public class PlayerController : MonoBehaviour {
 
     private void PerformJump() {
         CreateDust();
-        rb.velocity = new Vector2(rb.velocity.x, jumpHeight);
+        rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpHeight);
     }
 
     private void HandleMovementInput() {
@@ -95,7 +95,7 @@ public class PlayerController : MonoBehaviour {
         // This prevents overriding the Android On-Screen Joystick's velocity instructions.
         if (Mathf.Abs(moveDirection) > 0.1f) {
             CreateDust();
-            rb.velocity = new Vector2(moveDirection * moveSpeed, rb.velocity.y);
+            rb.linearVelocity = new Vector2(moveDirection * moveSpeed, rb.linearVelocity.y);
             
             bool isMovingLeft = moveDirection < 0;
             spriteRenderer.flipX = isMovingLeft;
@@ -103,7 +103,7 @@ public class PlayerController : MonoBehaviour {
         }
 
         // Animate based on raw velocity to guarantee perfect UI sync across Android/Console/Windows
-        anim.SetBool("moving", Mathf.Abs(rb.velocity.x) > 0.1f);
+        anim.SetBool("moving", Mathf.Abs(rb.linearVelocity.x) > 0.1f);
     }
 
     private void HandleFacingDirection(bool isMovingLeft) {

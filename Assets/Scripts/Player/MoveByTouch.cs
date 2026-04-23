@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,24 +20,35 @@ public class MoveByTouch : MonoBehaviour {
     private bool canDoubleJump;
     private bool facingLeft = false;
     private bool facingRight = false;
-
+    
+    // Cached components
+    private Rigidbody2D rb;
+    private Animator anim;
+    private SpriteRenderer spriteRenderer;
+    private PlayerControllerUP playerControllerUp;
+    private bool isMoving = false;
 
     // Start is called before the first frame update
     void Start() {
-        
+        rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        playerControllerUp = GetComponentInChildren<PlayerControllerUP>();
     }
 
     // Update is called once per frame
     void Update() {
-        if (mobileControls.active) {
-            canJump = GetComponentInChildren<PlayerControllerUP>().getJump();
-            canDoubleJump = GetComponentInChildren<PlayerControllerUP>().getDoubleJump();
+        if (mobileControls != null && mobileControls.activeSelf) {
+            canJump = playerControllerUp.getJump();
+            canDoubleJump = playerControllerUp.getDoubleJump();
 
-            if (joystick.Horizontal < -0.1) {
-                CreateDust();
-                gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(-moveSpeed * (-joystick.Horizontal), GetComponent<Rigidbody2D>().velocity.y);
-                gameObject.GetComponent<Animator>().SetBool("moving", true);
-                gameObject.GetComponent<SpriteRenderer>().flipX = true;
+            float h = joystick.Horizontal;
+
+            if (h < -0.1f) {
+                if (!isMoving) { CreateDust(); isMoving = true; }
+                rb.linearVelocity = new Vector2(moveSpeed * h, rb.linearVelocity.y);
+                anim.SetBool("moving", true);
+                spriteRenderer.flipX = true;
 
                 facingLeft = true;
                 if (facingRight == true) {
@@ -45,13 +56,11 @@ public class MoveByTouch : MonoBehaviour {
                     facingRight = false;
                 }
             }
-
-
-            if (joystick.Horizontal > 0.1) {
-                CreateDust();
-                gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(moveSpeed * (joystick.Horizontal), GetComponent<Rigidbody2D>().velocity.y);
-                gameObject.GetComponent<Animator>().SetBool("moving", true);
-                gameObject.GetComponent<SpriteRenderer>().flipX = false;
+            else if (h > 0.1f) {
+                if (!isMoving) { CreateDust(); isMoving = true; }
+                rb.linearVelocity = new Vector2(moveSpeed * h, rb.linearVelocity.y);
+                anim.SetBool("moving", true);
+                spriteRenderer.flipX = false;
 
                 facingRight = true;
                 if (facingLeft == true) {
@@ -59,32 +68,34 @@ public class MoveByTouch : MonoBehaviour {
                     facingLeft = false;
                 }
             }
-
             // Remove running animation
-            if (joystick.Horizontal == 0) {
-                gameObject.GetComponent<Animator>().SetBool("moving", false);
+            else {
+                isMoving = false;
+                anim.SetBool("moving", false);
+                // Stop instantly when joystick is released to feel responsive
+                rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
             }
         }
     }
 
     public void Jump() {
-        if (mobileControls.active) {
+        if (mobileControls != null && mobileControls.activeSelf) {
             if (canJump) {
                 CreateDust();
-                gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(GetComponent<Rigidbody2D>().velocity.x, jumpHeight);
-                GetComponentInChildren<PlayerControllerUP>().setJump(false);
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpHeight);
+                playerControllerUp.setJump(false);
             } else if (canDoubleJump) {
                 CreateDust();
-                gameObject.GetComponent<Rigidbody2D>().velocity = new Vector2(GetComponent<Rigidbody2D>().velocity.x, jumpHeight);
-                GetComponentInChildren<PlayerControllerUP>().setDoubleJump(false);
+                rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpHeight);
+                playerControllerUp.setDoubleJump(false);
                 canDoubleJump = false;
             }
         }
     }
 
     public void settings() {
-        if (mobileControls.active) {
-            if (!menu.active) {
+        if (mobileControls != null && mobileControls.activeSelf) {
+            if (!menu.activeSelf) {
                 stats.SetActive(false);
                 menu.SetActive(true);
                 Time.timeScale = 0;
@@ -97,22 +108,26 @@ public class MoveByTouch : MonoBehaviour {
     }
 
     private void OnTriggerEnter2D(Collider2D collision) {
-        if (mobileControls.active) {
+        if (mobileControls != null && mobileControls.activeSelf) {
             if (collision.gameObject.CompareTag("Chest")) {
-                collision.gameObject.GetComponent<Chest>().openChest();
+                Chest chest = collision.gameObject.GetComponent<Chest>();
+                if (chest != null) chest.openChest();
             }
         }
     }
 
     private void OnTriggerStay2D(Collider2D collision) {
-        if (mobileControls.active) {
+        if (mobileControls != null && mobileControls.activeSelf) {
             if (collision.gameObject.CompareTag("Instructor")) {
-                collision.gameObject.GetComponent<DialogueManager>().DialogueMobile();
+                DialogueManager dialogue = collision.gameObject.GetComponent<DialogueManager>();
+                if (dialogue != null) dialogue.DialogueMobile();
             }
         }
     }
 
     void CreateDust() {
-        dust.Play();
+        if (dust != null) {
+            dust.Play();
+        }
     }
 }
