@@ -6,8 +6,8 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour {
 
     [Header("Movement Settings")]
-    public float moveSpeed = 5f;
-    public float jumpHeight = 45f;
+    public float moveSpeed = 8f;
+    public float jumpHeight = 22f;
   
     [Header("UI & References")]
     public GameObject row;
@@ -36,7 +36,8 @@ public class PlayerController : MonoBehaviour {
     private Stats playerStats;
 
     private void Awake() {
-        if (jumpHeight < 45f) jumpHeight = 45f;
+        jumpHeight = 22f;
+        if (moveSpeed < 8f) moveSpeed = 8f;
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();

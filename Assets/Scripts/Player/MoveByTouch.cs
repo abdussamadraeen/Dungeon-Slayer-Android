@@ -30,7 +30,8 @@ public class MoveByTouch : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-        if (jumpHeight < 45f) jumpHeight = 45f;
+        jumpHeight = 22f;
+        if (moveSpeed < 8f) moveSpeed = 8f;
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -47,7 +48,7 @@ public class MoveByTouch : MonoBehaviour {
 
             if (h < -0.1f) {
                 if (!isMoving) { CreateDust(); isMoving = true; }
-                rb.linearVelocity = new Vector2(moveSpeed * h, rb.linearVelocity.y);
+                rb.linearVelocity = new Vector2(-moveSpeed, rb.linearVelocity.y);
                 anim.SetBool("moving", true);
                 spriteRenderer.flipX = true;
 
@@ -59,7 +60,7 @@ public class MoveByTouch : MonoBehaviour {
             }
             else if (h > 0.1f) {
                 if (!isMoving) { CreateDust(); isMoving = true; }
-                rb.linearVelocity = new Vector2(moveSpeed * h, rb.linearVelocity.y);
+                rb.linearVelocity = new Vector2(moveSpeed, rb.linearVelocity.y);
                 anim.SetBool("moving", true);
                 spriteRenderer.flipX = false;
 
