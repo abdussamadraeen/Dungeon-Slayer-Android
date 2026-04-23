@@ -19,7 +19,7 @@ Dungeon Slayer features **Universal Cross-Platform Input**. This means Desktop K
 - **WASD / Arrow Keys**: Move left, right, and jump.
 - **Spacebar**: Jump.
 - **F**: Melee Sword Attack (Triggers Hit-Stop on successful strikes).
-- **C**: Fire Bow (Requires exactly 4 Power Stars).
+- **C**: Fire Bow (Unlimited rapid fire).
 - **Left Shift**: Shadow Dash (Leaves behind afterimages).
 - **R**: Activate Awakening/Limit Break (Requires maximum Power Stars. Doubles damage output for 10 seconds).
 
@@ -27,7 +27,7 @@ Dungeon Slayer features **Universal Cross-Platform Input**. This means Desktop K
 - **Left Analog Stick / D-Pad**: Move left and right.
 - **[A] Button / [Cross]**: Jump.
 - **[X] Button / [Square]**: Melee Sword Attack (Triggers Hit-Stop).
-- **[Y] Button / [Triangle]**: Fire Bow (Requires exactly 4 Power Stars).
+- **[Y] Button / [Triangle]**: Fire Bow (Unlimited rapid fire).
 - **[RB] Right Bumper**: Shadow Dash (Leaves behind afterimages).
 - **[B] Button / [Circle]**: Activate Awakening/Limit Break.
 - **[Start] Button**: Pause / Open Menu.
@@ -46,8 +46,9 @@ If you wish to download the source code, view the C# architecture, or modify the
 
 ### 1. Required Software
 
-- **Unity Editor**: This game relies on specific 2D physics packages, so you must use exactly **Unity 2020.1.1f1**.
-  - To install it automatically in one click, just copy and paste this direct link into your internet browser: `unityhub://2020.1.1f1/2285c3239188`
+- **Unity Editor**: The project has been upgraded and optimized for **Unity 6 (6000.4.1f1)**.
+  - To install it automatically, use the Unity Hub and search for `6000.4.1f1`.
+- **Java Development Kit (JDK)**: If building for Android, **OpenJDK 17** is required by Unity 6.
 - **Code Editor**: Install **Visual Studio Code** (VS Code) with the standard C# extensions for syntax highlighting.
 
 ### 2. Installation Steps
