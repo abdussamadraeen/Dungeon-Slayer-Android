@@ -30,7 +30,7 @@ public class MoveByTouch : MonoBehaviour {
 
     // Start is called before the first frame update
     void Start() {
-        if (jumpHeight < 25f) jumpHeight = 25f;
+        if (jumpHeight < 45f) jumpHeight = 45f;
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
