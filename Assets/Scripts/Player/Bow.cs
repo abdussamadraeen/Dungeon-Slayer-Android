@@ -16,25 +16,16 @@ public class Bow : MonoBehaviour {
     }
 
     private void Update() {
-        if (playerStats == null) return;
-
-        if ((Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.JoystickButton3)) && playerStats.getPower() >= 4) {
+        if (Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.JoystickButton3)) {
             FireBow();
         }
     }
 
     public void AttackButton() {
-        if (playerStats == null) return;
-
-        if (playerStats.getPower() >= 4) {
-            FireBow();
-        }
+        FireBow();
     }
 
     private void FireBow() {
-        playerStats.power = 0;
-        playerStats.takePower(0); // Trigger UI update function cleanly
-        
         if (animator != null) {
             animator.SetTrigger("attackBow");
         }
