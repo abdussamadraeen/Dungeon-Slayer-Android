@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour {
 
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
-    public float jumpHeight = 10f;
+    public float jumpHeight = 15f;
   
     [Header("UI & References")]
     public GameObject row;
