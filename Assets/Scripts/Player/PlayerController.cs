@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour {
 
     [Header("Movement Settings")]
     public float moveSpeed = 5f;
-    public float jumpHeight = 15f;
+    public float jumpHeight = 25f;
   
     [Header("UI & References")]
     public GameObject row;
@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour {
     private Stats playerStats;
 
     private void Awake() {
+        if (jumpHeight < 25f) jumpHeight = 25f;
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
