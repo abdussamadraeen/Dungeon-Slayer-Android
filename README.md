@@ -1,4 +1,5 @@
 # Dungeon Slayer
+[![Dungeon Slayer Gameplay][(https://youtu.be/RljzdSgymck)
 
 A powerful, highly-optimized 2D Action RPG / Dungeon Crawler featuring smooth controls, intense 'Hit-Stop' combat natively built in Unity, and dynamic Anime-styled action mechanics.
 
